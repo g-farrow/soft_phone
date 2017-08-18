@@ -1,1 +1,4 @@
 .idea/
+/dist/
+/soft_phone.egg-info/
+/build/
