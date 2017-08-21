@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='soft_phone',
-      version='1.0',
+      version='1.1',
       description='Python library for automated phone call testing using PJSIP/PJSUA',
       url='https://github.com/g-farrow/soft_phone',
       author='Greg Farrow',
