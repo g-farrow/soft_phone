@@ -73,13 +73,14 @@ class SoftPhone:
                 break
             time.sleep(1.0 - ((time.time() - start_time) % 1.0))
 
-    def _wait_for_soft_phone_registration_to_end(self):
+    def _wait_for_soft_phone_registration_to_end(self, timeout=10):
         """
         Wait for the Soft Phone's registration status to be False
         """
         logger.debug("Waiting for registration status to be False")
         logger.debug("[{}] Registration info - {}".format(self.pbx_account_name, vars(self.account.info())))
-        while True:
+        start_time = datetime.now()
+        while (datetime.now() - start_time).seconds <= 10:
             if self.account.info().reg_expires == -1:
                 logger.debug("Registration status is now False")
                 break
