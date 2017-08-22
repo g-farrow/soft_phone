@@ -73,18 +73,18 @@ class SoftPhone:
                 break
             time.sleep(1.0 - ((time.time() - start_time) % 1.0))
 
-    def _wait_for_soft_phone_registration_to_end(self, timeout=10):
+    def _wait_for_soft_phone_registration_to_end(self, time_out=10):
         """
         Wait for the Soft Phone's registration status to be False
         """
         logger.debug("Waiting for registration status to be False")
         logger.debug("[{}] Registration info - {}".format(self.pbx_account_name, vars(self.account.info())))
         start_time = datetime.now()
-        while (datetime.now() - start_time).seconds <= 10:
+        while (datetime.now() - start_time).seconds <= time_out:
             if self.account.info().reg_expires == -1:
                 logger.debug("Registration status is now False")
                 break
-            time.sleep(0.1)
+            time.sleep(0.5)
             logger.debug("[{}] Registration info - {}".format(
                 self.pbx_account_name, vars(self.account.info())))
 
@@ -103,7 +103,7 @@ class SoftPhone:
             logger.debug("[{}] Attempting to delete the call object".format(self.pbx_account_name))
             del self.call  # need to delete the call object after it is finished.
             logger.debug("[{}] Call object has been deleted".format(self.pbx_account_name))
-        logger.info("[{}] Sip Phone has ben unregistered".format(self.pbx_account_name))
+        logger.info("[{}] Sip Phone has been unregistered".format(self.pbx_account_name))
 
     def _wait_for_active_media_state_on_call(self, time_out=10, required_media_state=1):
         """
@@ -187,6 +187,53 @@ class SoftPhone:
                 last_log_time = datetime.now()
                 logger.debug("[{}] Waiting for the call connection time ({} seconds) to reach the desired {} seconds"
                              "".format(self.pbx_account_name, round(call_connection_length), desired_call_length))
+
+    @staticmethod
+    def _round_up_current_datetime_seconds(round_value=5):
+        """
+        Get the current datetime seconds, rounded up to the nearest 'rounded_value'
+        :param round_value: Int - What to round the result up by
+        :return: Int - Number of seconds in "now" rounded up to the nearest 'rounded_value'
+        """
+        return int(round_value * round(float(int(datetime.now().strftime("%S"))) / round_value))
+
+    def wait_for_a_call_to_occur(self, time_out=60):
+        """
+        Wait for a call to happen, then continue when it does (with a time out)
+        :param time_out: Int - The maximum number of seconds to wait for a call to happen
+        """
+        logger.info("Waiting for a call to happen")
+        start_time = datetime.now()
+        log_seconds = self._round_up_current_datetime_seconds()
+        while (datetime.now() - start_time).seconds <= time_out:
+            if self.call:
+                logger.info("Call appears to have occurred, moving on")
+                break
+            candidate_log_seconds = self._round_up_current_datetime_seconds()
+            if log_seconds != candidate_log_seconds:
+                log_seconds = candidate_log_seconds
+                logger.debug("Waiting for an incoming call...")
+            time.sleep(0.1)
+
+    def wait_for_existing_call_to_end(self, time_out=60):
+        """
+        Wait for an existing call to end, then continue when it does (with a time out)
+        :param time_out: Int - The maximum number of seconds to wait for a call to happen
+        """
+        if not self.call:
+            raise PhoneCallNotInProgress("Cannot wait for call to end, as it has not started!")
+        logger.info("Waiting for a call to end")
+        start_time = datetime.now()
+        log_seconds = self._round_up_current_datetime_seconds()
+        while (datetime.now() - start_time).seconds <= time_out:
+            if not self.call.is_valid():
+                logger.info("Call has ended, moving on")
+                break
+            candidate_log_seconds = self._round_up_current_datetime_seconds()
+            if log_seconds != candidate_log_seconds:
+                log_seconds = candidate_log_seconds
+                logger.debug("Waiting for the call to end...")
+            time.sleep(0.1)
 
     def hang_up(self):
         """
