@@ -216,6 +216,11 @@ class SoftPhone:
         :param loop: Boolean - Should the audio file be played in a loop (True), or just once (False)
         """
         logger.debug("[{}] Attempting to play audio from {}".format(self.pbx_account_name, audio_file_path))
+        import os
+        if not os.path.exists(audio_file_path):
+            raise FileNotFoundError("Cannot find your audio file: {}".format(audio_file_path))
+        if not os.path.isfile(audio_file_path):
+            raise FileNotFoundError("Your audio file is not a file: {}".format(audio_file_path))
         self.call_slot_number = self.call.info().conf_slot
         self.audio_player_id = self.lib.create_player(audio_file_path, loop=loop)
         self.audio_player_slot_id = self.lib.player_get_slot(self.audio_player_id)
