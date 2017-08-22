@@ -12,9 +12,8 @@ class PJSipClient:
     Manage the PJSip instance
     """
 
-    def __init__(self, thread_name):
+    def __init__(self):
         self.lib = pj.Lib()  # Create library instance
-        self.lib.thread_register(thread_name)
         self.lib.init(log_cfg=pj.LogConfig(level=6, callback=log_cb,
                                            filename="/tmp/pjsip.log"))  # Init library with default config
         self.lib.create_transport(pj.TransportType.UDP)  # Create UDP transport which listens to any available port
