@@ -7,11 +7,17 @@ logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] [%(module)s] [%(f
 logger = logging.getLogger(__name__)
 
 
-def log_cb(level, str, len):
+def log_cb(level, msg, length_of_message):
     """
     Logging Callback
     """
-    print(str,)
+    if int(level) == 3:
+        logger.info(msg)
+    elif int(level) == 4:
+        logger.debug(msg)
+    else:
+        print(level, msg)
+
 
 
 class CallCallback(pj.CallCallback):
