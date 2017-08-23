@@ -8,6 +8,7 @@ from datetime import datetime
 logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] [%(funcName)s] [%(levelname)s] %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
+logging.addLevelName(5, "TRACE")
 
 
 class SoftPhone:
@@ -115,10 +116,10 @@ class SoftPhone:
             if str(self.call.is_valid()) == "1":
                 if self.call.info().media_state == pj.MediaState.ACTIVE:
                     logger.info("[{}] MediaState ACTIVE".format(self.pbx_account_name))
-                    logger.debug("[{}] Call info - %s".format(self.pbx_account_name, vars(self.call.info())))
+                    logger.log(5, "[{}] Call info - %s".format(self.pbx_account_name, vars(self.call.info())))
                     break
                 logger.debug("[{}] Waiting for MediaState ACTIVE (ringing)".format(self.pbx_account_name))
-                logger.debug("[{}] Call info - %s".format(self.pbx_account_name, vars(self.call.info())))
+                logger.log(5, "[{}] Call info - %s".format(self.pbx_account_name, vars(self.call.info())))
             else:
                 logger.debug("[{}] Call is not valid".format(self.pbx_account_name))
                 if required_media_state == 0:
@@ -136,15 +137,15 @@ class SoftPhone:
         """
         logger.debug("[{}] Making call to {}".format(self.pbx_account_name, number_to_dial))
         self.call = self.account.make_call("{}:{}@{}".format(protocol, number_to_dial, self.pbx_ip, CallCallback()))
-        logger.debug("[{}] Call info: {}".format(self.pbx_account_name, vars(self.call.info())))
+        logger.log(5, "[{}] Call info: {}".format(self.pbx_account_name, vars(self.call.info())))
 
         for i in range(1, 120):
             if self.call.info().state_text == "CONFIRMED":  # dialler and AGI have established a connection
-                logger.info("[{}] Call info - {}".format(self.pbx_account_name, vars(self.call.info())))
+                logger.log(5, "[{}] Call info - {}".format(self.pbx_account_name, vars(self.call.info())))
                 logger.info("[{}] Number dialled and connected (call in progress)".format(self.pbx_account_name))
                 break
             logger.debug("[{}] Waiting for call state to be CONFIRMED".format(self.pbx_account_name))
-            logger.debug("[{}] Call info - {}".format(self.pbx_account_name, vars(self.call.info())))
+            logger.log(5, "[{}] Call info - {}".format(self.pbx_account_name, vars(self.call.info())))
             time.sleep(0.1)
         if self.call.info().state_text != "CONFIRMED":
             logger.info("[{}] Call state is '{}'".format(self.pbx_account_name, self.call.info().state_text))
