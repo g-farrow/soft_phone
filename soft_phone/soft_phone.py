@@ -207,12 +207,12 @@ class SoftPhone:
         log_seconds = self._round_up_current_datetime_seconds()
         while (datetime.now() - start_time).seconds <= time_out:
             if self.call:
-                logger.info("Call appears to have occurred, moving on")
+                logger.info("[{}] Call appears to have occurred, moving on".format(self.pbx_account_name))
                 break
             candidate_log_seconds = self._round_up_current_datetime_seconds()
             if log_seconds != candidate_log_seconds:
                 log_seconds = candidate_log_seconds
-                logger.debug("Waiting for an incoming call...")
+                logger.debug("[{}] Waiting for an incoming call...".format(self.pbx_account_name))
             time.sleep(0.1)
 
     def wait_for_existing_call_to_end(self, time_out=60):
@@ -227,12 +227,12 @@ class SoftPhone:
         log_seconds = self._round_up_current_datetime_seconds()
         while (datetime.now() - start_time).seconds <= time_out:
             if not self.call.is_valid():
-                logger.info("Call has ended, moving on")
+                logger.info("[{}] Call has ended, moving on".format(self.pbx_account_name))
                 break
             candidate_log_seconds = self._round_up_current_datetime_seconds()
             if log_seconds != candidate_log_seconds:
                 log_seconds = candidate_log_seconds
-                logger.debug("Waiting for the call to end...")
+                logger.debug("[{}] Waiting for the call to end...".format(self.pbx_account_name))
             time.sleep(0.1)
 
     def hang_up(self):
@@ -266,9 +266,11 @@ class SoftPhone:
         logger.debug("[{}] Attempting to play audio from {}".format(self.pbx_account_name, audio_file_path))
         import os
         if not os.path.exists(audio_file_path):
-            raise FileNotFoundError("Cannot find your audio file: {}".format(audio_file_path))
+            raise FileNotFoundError("[{}] Cannot find your audio file: {}".format(self.pbx_account_name,
+                                                                                  audio_file_path))
         if not os.path.isfile(audio_file_path):
-            raise FileNotFoundError("Your audio file is not a file: {}".format(audio_file_path))
+            raise FileNotFoundError("[{}] Your audio file is not a file: {}".format(self.pbx_account_name,
+                                                                                    audio_file_path))
         self.call_slot_number = self.call.info().conf_slot
         self.audio_player_id = self.lib.create_player(audio_file_path, loop=loop)
         self.audio_player_slot_id = self.lib.player_get_slot(self.audio_player_id)

@@ -5,6 +5,7 @@ import time
 logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] [%(module)s] [%(funcName)s] [%(levelname)s] %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
+logging.addLevelName(5, "TRACE")
 
 
 def log_cb(level, msg, length_of_message):
@@ -12,9 +13,9 @@ def log_cb(level, msg, length_of_message):
     Logging Callback
     """
     if int(level) == 3:
-        logger.info(msg)
-    elif int(level) == 4:
         logger.debug(msg)
+    elif int(level) == 4:
+        logger.log(5, msg)
     else:
         print(level, msg)
 
