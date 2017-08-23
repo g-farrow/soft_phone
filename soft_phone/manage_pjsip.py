@@ -2,7 +2,7 @@ import pjsua as pj
 import logging
 from .callbacks import log_cb
 
-logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] [%(module)s] [%(funcName)s] [%(levelname)s] %(message)s',
+logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] [%(funcName)s] [%(levelname)s] %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
 

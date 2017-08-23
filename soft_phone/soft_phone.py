@@ -5,7 +5,7 @@ from soft_phone.callbacks import IncomingCallCallback, CallCallback
 from soft_phone.exceptions import PhoneCallNotInProgress
 from datetime import datetime
 
-logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] [%(module)s] [%(funcName)s] [%(levelname)s] %(message)s',
+logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] [%(funcName)s] [%(levelname)s] %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
 
@@ -77,12 +77,12 @@ class SoftPhone:
         """
         Wait for the Soft Phone's registration status to be False
         """
-        logger.debug("Waiting for registration status to be False")
+        logger.debug("[{}] Waiting for registration status to be False".format(self.pbx_account_name))
         logger.debug("[{}] Registration info - {}".format(self.pbx_account_name, vars(self.account.info())))
         start_time = datetime.now()
         while (datetime.now() - start_time).seconds <= time_out:
             if self.account.info().reg_expires == -1:
-                logger.debug("Registration status is now False")
+                logger.debug("[{}] Registration status is now False".format(self.pbx_account_name))
                 break
             time.sleep(0.5)
             logger.debug("[{}] Registration info - {}".format(
@@ -202,7 +202,7 @@ class SoftPhone:
         Wait for a call to happen, then continue when it does (with a time out)
         :param time_out: Int - The maximum number of seconds to wait for a call to happen
         """
-        logger.info("Waiting for a call to happen")
+        logger.info("[{}] Waiting for a call to happen".format())
         start_time = datetime.now()
         log_seconds = self._round_up_current_datetime_seconds()
         while (datetime.now() - start_time).seconds <= time_out:
