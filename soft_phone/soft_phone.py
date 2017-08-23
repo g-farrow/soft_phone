@@ -56,7 +56,7 @@ class SoftPhone:
             account, cb=IncomingCallCallback(account, self, action_on_incoming_call=self.action_on_incoming_call,
                                              audio_playback_file=self.answer_audio, loop=self.loop)
         )
-        logger.debug("[{}] Registration info - {}".format(self.pbx_account_name, vars(self.account.info())))
+        logger.log(5, "[{}] Registration info - {}".format(self.pbx_account_name, vars(self.account.info())))
         logger.info("[{}] Account created".format(self.pbx_account_name))
 
     def register_soft_phone(self):
@@ -79,14 +79,14 @@ class SoftPhone:
         Wait for the Soft Phone's registration status to be False
         """
         logger.debug("[{}] Waiting for registration status to be False".format(self.pbx_account_name))
-        logger.debug("[{}] Registration info - {}".format(self.pbx_account_name, vars(self.account.info())))
+        logger.log(5, "[{}] Registration info - {}".format(self.pbx_account_name, vars(self.account.info())))
         start_time = datetime.now()
         while (datetime.now() - start_time).seconds <= time_out:
             if self.account.info().reg_expires == -1:
-                logger.debug("[{}] Registration status is now False".format(self.pbx_account_name))
+                logger.log(5, "[{}] Registration status is now False".format(self.pbx_account_name))
                 break
             time.sleep(0.5)
-            logger.debug("[{}] Registration info - {}".format(
+            logger.log(5, "[{}] Registration info - {}".format(
                 self.pbx_account_name, vars(self.account.info())))
 
     def unregister_soft_phone(self):
@@ -94,7 +94,7 @@ class SoftPhone:
         Unregister and delete the account when the call has ended
         """
         logger.info("[{}] Unregistering phone".format(self.pbx_account_name))
-        logger.debug("[{}] Registration info - {}".format(
+        logger.log(5, "[{}] Registration info - {}".format(
             self.pbx_account_name, vars(self.account.info())))
         self.account.set_registration(False)
         logger.debug("[{}] Deleting account".format(self.pbx_account_name))
@@ -148,7 +148,7 @@ class SoftPhone:
             logger.log(5, "[{}] Call info - {}".format(self.pbx_account_name, vars(self.call.info())))
             time.sleep(0.1)
         if self.call.info().state_text != "CONFIRMED":
-            logger.info("[{}] Call state is '{}'".format(self.pbx_account_name, self.call.info().state_text))
+            logger.log(5, "[{}] Call state is '{}'".format(self.pbx_account_name, self.call.info().state_text))
 
     def _validate_phone_call_in_progress(self):
         """
@@ -203,7 +203,7 @@ class SoftPhone:
         Wait for a call to happen, then continue when it does (with a time out)
         :param time_out: Int - The maximum number of seconds to wait for a call to happen
         """
-        logger.info("[{}] Waiting for a call to happen".format())
+        logger.info("[{}] Waiting for a call to happen".format(self.pbx_account_name))
         start_time = datetime.now()
         log_seconds = self._round_up_current_datetime_seconds()
         while (datetime.now() - start_time).seconds <= time_out:
