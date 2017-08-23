@@ -5,8 +5,6 @@ from soft_phone.callbacks import IncomingCallCallback, CallCallback
 from soft_phone.exceptions import PhoneCallNotInProgress
 from datetime import datetime
 
-logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] [%(funcName)s] [%(levelname)s] %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S')
 logger = logging.getLogger(__name__)
 logging.addLevelName(5, "TRACE")
 
