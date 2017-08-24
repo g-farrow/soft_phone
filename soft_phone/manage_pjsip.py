@@ -1,8 +1,6 @@
 import pjsua as pj
-import logging
+from soft_phone import logger
 from .callbacks import log_cb
-
-logger = logging.getLogger(__name__)
 
 
 class PJSipClient:

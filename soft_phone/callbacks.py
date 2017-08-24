@@ -1,9 +1,6 @@
 import pjsua as pj
-import logging
+from soft_phone import logger
 import time
-
-logger = logging.getLogger(__name__)
-logging.addLevelName(5, "TRACE")
 
 
 def log_cb(level, msg, length_of_message):
@@ -16,7 +13,6 @@ def log_cb(level, msg, length_of_message):
         logger.log(5, msg)
     else:
         print(level, msg)
-
 
 
 class CallCallback(pj.CallCallback):
@@ -63,4 +59,5 @@ class IncomingCallCallback(pj.AccountCallback):
             logger.info("[{}] [INCOMING] The intended disposition of this call is 'busy' - busy tone was "
                         "returned".format(self.sip_phone.pbx_account_name))
         else:
-            logger.error("[{}] [INCOMING] Could not handle incoming call".format(self.sip_phone.pbx_account_name))
+            raise ValueError("'{}' is not a valid value for 'action_on_incoming_call'".format(
+                self.action_on_incoming_call))
