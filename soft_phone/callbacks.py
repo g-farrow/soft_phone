@@ -1,6 +1,9 @@
 import pjsua as pj
-from soft_phone import logger
+import logging
 import time
+
+logger = logging.getLogger(__name__)
+logging.addLevelName(5, "TRACE")
 
 
 def log_cb(level, msg, length_of_message):

@@ -1,9 +1,12 @@
 import pjsua as pj
-from soft_phone import logger
+import logging
 import time
 from soft_phone.callbacks import IncomingCallCallback, CallCallback
 from soft_phone.exceptions import PhoneCallNotInProgress
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
+logging.addLevelName(5, "TRACE")
 
 
 class SoftPhone:
